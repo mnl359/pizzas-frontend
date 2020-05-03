@@ -234,6 +234,9 @@ class CheckoutPage extends Component
     if(this.state.isValid && this.verifyInput('name') && this.verifyInput('email') && this.verifyInput('couponCode'))
     {
       alert('Submitted!');
+      console.log(ingredientsInfoStatic);
+      console.log(this.props.pizzaComposition);
+      console.log(this.state.orderForm);
     }
 
   }
