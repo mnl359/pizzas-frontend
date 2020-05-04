@@ -6,6 +6,9 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import { ingredientsInfoStatic, pizzaCrustImage } from './../Special/IngredientsInfo.js';
 
+require('dotenv').config();
+
+const url = process.env.REACT_APP_API_URL;
 
 class CheckoutPage extends Component
 {
@@ -250,21 +253,32 @@ class CheckoutPage extends Component
       var obj = {};
       obj.name = replacedItems["0"].name;
       obj.email = replacedItems["1"].email;
-      obj.delivery_method = replacedItems["2"].delivery_method;
+      obj.delivery = replacedItems["2"].delivery_method;
       obj.notes = replacedItems["3"].notes;
       obj.regular_client = replacedItems["4"].regular_client;
       obj.coupon_code = replacedItems["5"].coupon_code;
 
+      if (obj.regular_client == ""){
+        obj.regular_client = false;
+      }
+      if(obj.delivery == ""){
+        obj.delivery = "delivered";
+      }
+
       let merged = {...obj, ...this.props.pizzaComposition}
 
-      //console.log(merged);
-      
       const response = await axios.post(
-        'http://localhost:8080/orderingredient2',
-        { "example": JSON.stringify(merged) },
+        url + '/orderingredient',
+        JSON.stringify(merged),
         { headers: { 'Content-Type': 'application/json' } }
       )
-      console.log(response.data)
+      if(response.status == 201){
+        alert("order successfully sent")
+        console.log(response) 
+      } else {
+        alert("error")
+        console.log(response)     
+      }
     }
 
   }
