@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Input from './../Special/Input.js';
+import axios from 'axios';
 
 //The chosen ingredients info
 import { connect } from 'react-redux';
@@ -229,14 +230,35 @@ class CheckoutPage extends Component
   }
 
   //Click on submit -> we must verify the input
-  submitButtonHandler = () => {
+   submitButtonHandler = async () => {
     //Step by step -> if error foudn stop, so that it's not overwritten
     if(this.state.isValid && this.verifyInput('name') && this.verifyInput('email') && this.verifyInput('couponCode'))
     {
-      alert('Submitted!');
-      console.log(ingredientsInfoStatic);
-      console.log(this.props.pizzaComposition);
-      console.log(this.state.orderForm);
+      //console.log(this.state.orderForm);
+      //console.log(this.props.pizzaComposition);
+
+      const filtered = Object.values(this.state.orderForm).filter((item, _index) => item.value.length >= 0);
+
+      const values = filtered.map((item, _index) => item.value);
+
+      const replacements = {'0': 'name', '1': 'email', '2': 'delivery_method', '3': 'notes', '4': 'regular_client', '5': 'coupon_code'};
+      let replacedItems = Object.keys(values).map((key) => {
+        const newKey = replacements[key] /*|| key*/;
+        return { [newKey] : values[key] };
+      });
+
+      console.log(replacedItems);
+
+      //let merged = Object.assign(replacedItems, this.props.pizzaComposition);
+
+      let merged = {...replacedItems, ...this.props.pizzaComposition}
+
+      const response = await axios.post(
+        'http://localhost:8080/orderingredient2',
+        { "example": JSON.stringify(merged) },
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      console.log(response.data)
     }
 
   }
