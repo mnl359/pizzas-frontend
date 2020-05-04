@@ -247,12 +247,18 @@ class CheckoutPage extends Component
         return { [newKey] : values[key] };
       });
 
-      console.log(replacedItems);
+      var obj = {};
+      obj.name = replacedItems["0"].name;
+      obj.email = replacedItems["1"].email;
+      obj.delivery_method = replacedItems["2"].delivery_method;
+      obj.notes = replacedItems["3"].notes;
+      obj.regular_client = replacedItems["4"].regular_client;
+      obj.coupon_code = replacedItems["5"].coupon_code;
 
-      //let merged = Object.assign(replacedItems, this.props.pizzaComposition);
+      let merged = {...obj, ...this.props.pizzaComposition}
 
-      let merged = {...replacedItems, ...this.props.pizzaComposition}
-
+      //console.log(merged);
+      
       const response = await axios.post(
         'http://localhost:8080/orderingredient2',
         { "example": JSON.stringify(merged) },
