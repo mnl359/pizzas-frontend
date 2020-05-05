@@ -6,6 +6,10 @@ See it in action: Click [http://stanislavv.ca/React/PizzaMaker1](http://stanisla
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Environment variables
+
+The file ``` .env ``` contains the environment variables required.
+
 ## Available Scripts
 
 In the project directory, you can run:
