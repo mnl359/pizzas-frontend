@@ -91,7 +91,8 @@ jobs:
           paths: .
 
   deploy:
-    executor: aws-cli/default
+    #executor: aws-cli/default
+    <<: *terraform
     steps:
       - attach_workspace:
           at: ~/pizza-aplication
