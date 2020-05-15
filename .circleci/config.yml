@@ -39,7 +39,10 @@ jobs:
     steps:
       - run:
           name: init
-          command: terraform init
+          command: |
+            ls -la
+            pwd
+            terraform init
       - persist_to_workspace:
           root: ~/pizza-aplication
           paths: .
