@@ -91,6 +91,8 @@ jobs:
       - run:
           name: Bucket name
           command: |
+            ls -la
+            pwd
             export BUCKET=$(cat output.txt | grep bucket_name | sed -E 's/bucket_name = //g')
       - aws-cli/install
       - aws-cli/setup:
