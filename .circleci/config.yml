@@ -46,9 +46,8 @@ jobs:
             ls -la
             pwd
             terraform init
-      - persist_to_workspace:
-          root: ~/pizza-aplication
-          paths: .
+      - attach_workspace:
+          at: ~/pizza-aplication
 
   plan:
     <<: *terraform
