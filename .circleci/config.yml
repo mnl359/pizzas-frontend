@@ -108,7 +108,7 @@ jobs:
           name: Deploy to AWS
           command: |
             cd build
-            aws s3 ls #sync . s3://$BUCKET
+            aws s3 sync . s3://$BUCKET
 
   destroy:
     <<: *terraform
