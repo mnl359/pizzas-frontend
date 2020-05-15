@@ -25,6 +25,8 @@ jobs:
             name: Set env file
             command: |
                 echo "REACT_APP_API_URL=$BACKEND_API_ENV" >> .env
+                ls -la
+                pwd
         - node/install-packages
         - run:
             name: Unit test
