@@ -5,18 +5,9 @@ orbs:
 terraform: &terraform
   working_directory: ~/pizza-aplication
   docker:
-    - image: hashicorp/terraform:0.12.24
+    - image: mcarras1/terraform_aws-cli:1.0
   environment:
     TF_IN_AUTOMATION: true
-    TF_VAR_AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-    TF_VAR_AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-    TF_VAR_AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
-
-aws-cli: &aws-cli
-  working_directory: ~/pizza-aplication
-  docker:
-    - image: amazon/aws-cli:2.0.6
-  environment:
     TF_VAR_AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
     TF_VAR_AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
     TF_VAR_AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
@@ -99,12 +90,8 @@ jobs:
           paths: .
 
   deploy:
-    #executor: aws-cli/default
-    <<: *aws-cli
+    <<: *terraform
     steps:
-      - run:
-          name: Installing dependencies
-          command: yum install -y tar gzip
       - attach_workspace:
           at: ~/pizza-aplication
       - run:
