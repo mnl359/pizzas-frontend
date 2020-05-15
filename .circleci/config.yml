@@ -89,7 +89,9 @@ workflows:
   build_front:
     jobs:
       - build
-      - init
+      - init:
+         requires:
+            - build
       - plan:
           requires:
             - init
