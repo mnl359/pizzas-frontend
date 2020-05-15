@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@2.0.3
+  aws-cli: circleci/aws-cli@1.0.0
 
 terraform: &terraform
   working_directory: ~/pizza-aplication/terraform
@@ -64,16 +65,31 @@ jobs:
           at: ~/pizza-aplication
       - run:
           name: apply
-          command: terraform apply -auto-approve
+          command: |
+            terraform apply -auto-approve > test.txt
+            cat test.txt
       - run:
           name: show
           command: terraform show -no-color > tfresult
-      - store_artifacts:
-          path: ~/pizza-aplication/terraform/tfresult
-          destination: tfresult
+      - persist_to_workspace:
+          root: ~/pizza-aplication
+          paths: .
 
   deploy:
-    
+    executor: aws-cli/default
+    environment:
+        BUCKET_ENV: $BUCKET
+    steps:
+      - attach_workspace:
+          at: ~/pizza-aplication
+      - aws-cli/install
+      - aws-cli/setup:
+            profile-name: personal
+      - run:
+          name: Deploy to aws
+          command: |
+            cd build
+            aws s3 sync . s3://$BUCKET_ENV
 
   destroy:
     <<: *terraform
@@ -98,6 +114,9 @@ workflows:
       - apply:
           requires:
             - plan
+      - deploy:
+          requires:
+            - apply
       - destroy:
           requires:
             - plan
