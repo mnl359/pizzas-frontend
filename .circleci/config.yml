@@ -75,9 +75,10 @@ jobs:
           at: ~/pizza-aplication
       - run:
           name: apply
-          command: |
-            terraform apply -auto-approve > test.txt
-            cat test.txt
+          command: terraform apply -auto-approve > test.txt
+      - run:
+          name: apply
+          command: cat test.txt
       - run:
           name: show
           command: terraform show -no-color > tfresult
