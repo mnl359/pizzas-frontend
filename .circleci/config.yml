@@ -40,14 +40,17 @@ jobs:
   init:
     <<: *terraform
     steps:
+      - attach_workspace:
+          at: ~/pizza-aplication
       - run:
           name: init
           command: |
             ls -la
             pwd
             terraform init
-      - attach_workspace:
-          at: ~/pizza-aplication
+      - persist_to_workspace:
+          root: ~/pizza-aplication
+          paths: . 
 
   plan:
     <<: *terraform
