@@ -33,7 +33,7 @@ jobs:
             command: echo Success
         - run:
             name: Build
-            command: npm run build
+            command: CI=false npm run build
   init:
     <<: *terraform
     steps:
