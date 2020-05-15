@@ -80,8 +80,6 @@ jobs:
           command: |
             cd terraform
             terraform apply -auto-approve > output.txt
-            ls -la
-            ls -la ..
       - run:
           name: show
           command: terraform show -no-color > tfresult
@@ -97,16 +95,20 @@ jobs:
       - run:
           name: Bucket name
           command: |
-            ls -la
+            cd terraform
             export BUCKET=$(cat output.txt | grep bucket_name | sed -E 's/bucket_name = //g')
-      #- aws-cli/install
-      #- aws-cli/setup:
-      #      profile-name: personal
-      #- run:
-      #    name: Deploy to aws
-      #    command: |
-      #      cd build
-      #      aws s3 sync . s3://$BUCKET
+      - run:
+          name: Setup AWS Credentials
+          command: |
+            mkdir -p ~/.aws/
+            echo "[default]" >> ~/.aws/credentials
+            echo "aws_access_key_id=$TF_VAR_AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+            echo "aws_secret_access_key=$TF_VAR_AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+      - run:
+          name: Deploy to AWS
+          command: |
+            cd build
+            aws s3 ls #sync . s3://$BUCKET
 
   destroy:
     <<: *terraform
