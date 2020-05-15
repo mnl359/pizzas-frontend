@@ -17,7 +17,7 @@ jobs:
     executor: node/default
     working_directory: ~/pizza-aplication
     environment:
-        BACKEND_API_ENV: $BACKEND_API_ENV
+        BACKEND_API_ENV: $BACKEND_API
         CI: true
     steps:
         - checkout
@@ -70,7 +70,10 @@ jobs:
           command: terraform show -no-color > tfresult
       - store_artifacts:
           path: ~/pizza-aplication/terraform/tfresult
-          destination: tfresult            
+          destination: tfresult
+
+  deploy:
+    
 
   destroy:
     <<: *terraform
@@ -87,6 +90,16 @@ workflows:
     jobs:
       - build
       - init
-      - plan
-      - apply
-      
+      - plan:
+          requires:
+            - init
+      - apply:
+          requires:
+            - plan
+      - destroy:
+          requires:
+            - plan
+          filters:
+            branches:
+              only:
+                - destroy
