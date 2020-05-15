@@ -34,7 +34,9 @@ jobs:
             command: echo Success
         - run:
             name: Build
-            command: CI=false npm run build
+            command: | 
+              CI=false npm run build
+              ls -la
         - persist_to_workspace:
             root: ~/pizza-aplication
             paths: .
@@ -46,8 +48,7 @@ jobs:
       - run:
           name: init
           command: |
-            ls -la
-            pwd
+            ls -la ..
             terraform init
       - persist_to_workspace:
           root: ~/pizza-aplication
