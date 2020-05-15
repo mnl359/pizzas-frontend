@@ -76,7 +76,11 @@ jobs:
           at: ~/pizza-aplication
       - run:
           name: apply
-          command: terraform apply -auto-approve > output.txt          
+          command: |
+            ls -la
+            pwd
+            ls -la ..
+            terraform apply -auto-approve > output.txt          
       - run:
           name: show
           command: terraform show -no-color > tfresult
