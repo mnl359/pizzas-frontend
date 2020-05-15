@@ -4,7 +4,7 @@ orbs:
   aws-cli: circleci/aws-cli@1.0.0
 
 terraform: &terraform
-  working_directory: ~/pizza-aplication/terraform
+  working_directory: ~/pizza-aplication
   docker:
     - image: hashicorp/terraform:0.12.24
   environment:
@@ -48,7 +48,7 @@ jobs:
       - run:
           name: init
           command: |
-            ls -la ..
+            cd terraform
             terraform init
       - persist_to_workspace:
           root: ~/pizza-aplication
@@ -61,7 +61,9 @@ jobs:
           at: ~/pizza-aplication
       - run:
           name: plan
-          command: terraform plan
+          command: |
+            cd terraform
+            terraform plan
       - store_artifacts:
           path: ~/pizza-aplication/terraform/tfplan
           destination: tfplan
@@ -77,9 +79,9 @@ jobs:
       - run:
           name: apply
           command: |
+            cd terraform
             terraform apply -auto-approve > output.txt
             ls -la
-            pwd
             ls -la ..
       - run:
           name: show
