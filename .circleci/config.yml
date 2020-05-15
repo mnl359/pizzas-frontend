@@ -13,7 +13,7 @@ terraform: &terraform
     TF_VAR_AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
 
 aws-cli: &aws-cli
-    working_directory: ~/pizza-aplication
+  working_directory: ~/pizza-aplication
   docker:
     - image: amazon/aws-cli:2.0.6
   environment:
