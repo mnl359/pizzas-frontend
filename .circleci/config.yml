@@ -26,22 +26,32 @@ jobs:
             name: Set env file
             command: |
                 echo "REACT_APP_API_URL=$BACKEND_API_ENV" >> .env
-        - node/install-packages
+        - run:
+            name: Install
+            command: npm install
         - run:
             name: Unit test
             command: echo Success
         - run:
             name: Build
-            command: npm run build
+            command: CI=false npm run build
+        - persist_to_workspace:
+            root: ~/pizza-aplication
+            paths: .
   init:
     <<: *terraform
     steps:
+      - attach_workspace:
+          at: ~/pizza-aplication
       - run:
           name: init
-          command: terraform init
+          command: |
+            ls -la
+            pwd
+            terraform init
       - persist_to_workspace:
           root: ~/pizza-aplication
-          paths: .
+          paths: . 
 
   plan:
     <<: *terraform
