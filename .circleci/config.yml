@@ -105,7 +105,7 @@ jobs:
             cd terraform
             export BUCKET=$(cat output.txt | grep bucket_name | sed -E 's/bucket_name = //g')
             cd ~/pizza-aplication/build
-            aws s3 sync . s3://rampup2020-pizza-application
+            aws s3 sync . s3://rampup2020-pizza-application2
 
   destroy:
     <<: *terraform
@@ -114,7 +114,7 @@ jobs:
           at: ~/pizza-aplication
       - run:
           name: Empty the bucket
-          command: aws s3 rm s3://rampup2020-pizza-application --recursive
+          command: aws s3 rm s3://rampup2020-pizza-application2 --recursive
       - run:
           name: destroy app
           command: terraform destroy -auto-approve
