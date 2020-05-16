@@ -97,6 +97,7 @@ jobs:
           command: |
             cd terraform
             export BUCKET=$(cat output.txt | grep bucket_name | sed -E 's/bucket_name = //g')
+            echo $BUCKET
       - run:
           name: Setup AWS Credentials
           command: |
@@ -104,11 +105,13 @@ jobs:
             echo "[default]" >> ~/.aws/credentials
             echo "aws_access_key_id=$TF_VAR_AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
             echo "aws_secret_access_key=$TF_VAR_AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+            echo $BUCKET
       - run:
           name: Deploy to AWS
           command: |
             cd build
-            aws s3 sync . s3://$BUCKET
+            echo $BUCKET
+            #aws s3 sync . s3://$BUCKET
 
   destroy:
     <<: *terraform
