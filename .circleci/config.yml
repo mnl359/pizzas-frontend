@@ -93,10 +93,6 @@ jobs:
       - attach_workspace:
           at: ~/pizza-aplication
       - run:
-          name: Bucket name
-          command: |
-            
-      - run:
           name: Setup AWS Credentials
           command: |
             mkdir -p ~/.aws/
