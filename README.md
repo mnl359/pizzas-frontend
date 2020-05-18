@@ -1,5 +1,8 @@
 # RampUp 2020: Pizza application
 
+[![RampUp](https://circleci.com/gh/mnl359/pizzas-frontend/tree/master.svg?style=shield
+)](https://app.circleci.com/pipelines/github/mnl359/pizzas-frontend)
+
 Pizza application in React and deploy in AWS S3 Bucket.
 
 ## Architecture
