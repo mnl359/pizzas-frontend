@@ -6,20 +6,20 @@ Pizza application in React and deploy in AWS S3 Bucket.
 
 ![](images/architecture.png)
 
-Only for the application frontend, a S3 bucket will be deploy it. The application backend is located [here](https://github.com/mnl359/pizzas-back/tree/master)
+Only for the application frontend, an S3 bucket will be deploying it. The application backend is located [here](https://github.com/mnl359/pizzas-back/tree/master)
 
 ## Software requirements
 
-To run this application without CI/CD tool, the software needed is:
+To run this application without a CI/CD tool, the software needed is:
 
 - NPM
 - terraform
 
-Also, a AWS and CircleCI account are required.
+Also, an AWS and CircleCI account is required.
 
 ## Deploy
 
-1. You need to create a S3 bucket and a DynamoDB table to store the terraform state. Also, change the following variables in the [state_config.tf](terraform/state-config.tf):
+1. You need to create an S3 bucket and a DynamoDB table to store the Terraform state. Also, change the following variables in the [state_config.tf](terraform/state-config.tf):
 
 | Line | Variable | Description |
 | ---- | -------- | ----------- |
@@ -72,10 +72,10 @@ echo "REACT_APP_API_URL=$BACKEND_API_ENV" >> .env
 npm run build
 ```
 
-4. Enter to the terraform directory and run the following commands:
+4. Enter the terraform directory and run the following commands:
 
 ```sh
-# Initialize terraform
+# Initialize Terraform
 terraform init
 # Infrastructure checkout
 terraform plan
@@ -83,7 +83,7 @@ terraform plan
 terraform apply
 ```
 
-5. Upload the builded frontend to the bucket
+5. Upload the built frontend to the bucket
 ```sh
 
 aws s3 sync . s3://<bucket name>
@@ -91,3 +91,32 @@ aws s3 sync . s3://<bucket name>
 
 ### Pipeline
 
+1. Follow the project from your CircleCI account.
+
+2. Set the environment variables in CircleCI:
+
+| Variable | Description |
+| -------- | ----------- |
+| AWS_ACCESS_KEY_ID | AWS access key |
+| AWS_DEFAULT_REGION | AWS default region |
+| AWS_SECRET_ACCESS_KEY | AWS secret access key |
+| BACKEND_API | Backend API URL |
+
+3. Build the project.
+
+## Usage
+
+In the terraform output, a variable called website_endpoint contains the application URL.
+
+---
+**NOTE**
+
+To destroy the application manually:
+
+```sh
+terraform destroy
+```
+
+In the pipeline, commit to a branch called "destroy".
+
+---
