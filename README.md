@@ -102,7 +102,13 @@ aws s3 sync . s3://<bucket name>
 | AWS_SECRET_ACCESS_KEY | AWS secret access key |
 | BACKEND_API | Backend API URL |
 
-3. Build the project.
+3. You need to change the configuration pipeline in the step deploy to change the bucket name
+
+```sh
+aws s3 sync . s3://<bucket name>
+```
+
+4. Build the project.
 
 ## Usage
 
