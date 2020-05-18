@@ -5,6 +5,8 @@
 
 Pizza application in React and deploy in AWS S3 Bucket.
 
+
+
 ## Architecture
 
 ![](images/architecture.png)

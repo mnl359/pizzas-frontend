@@ -273,7 +273,7 @@ class CheckoutPage extends Component
         { headers: { 'Content-Type': 'application/json' } }
       )
       if(response.status == 201){
-        alert("order successfully sent")
+        alert("Success")
         console.log(response) 
       } else {
         alert("error")
