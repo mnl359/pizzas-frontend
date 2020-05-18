@@ -1,50 +1,93 @@
-# React-PizzaMaker
+# RampUp 2020: Pizza application
 
-React pizza app ``` run on port 3000 ```
+Pizza application in React and deploy in AWS S3 Bucket.
 
-### Environment variables
+## Architecture
 
-The file ``` .env ``` contains the environment variables required.
+![](images/architecture.png)
 
-## Available Scripts
+Only for the application frontend, a S3 bucket will be deploy it. The application backend is located [here](https://github.com/mnl359/pizzas-back/tree/master)
 
-In the project directory, you can run:
+## Software requirements
 
-### `npm start`
+To run this application without CI/CD tool, the software needed is:
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- NPM
+- terraform
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Also, a AWS and CircleCI account are required.
 
-### `npm test`
+## Deploy
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. You need to create a S3 bucket and a DynamoDB table to store the terraform state. Also, change the following variables in the [state_config.tf](terraform/state-config.tf):
 
-### `npm run build`
+| Line | Variable | Description |
+| ---- | -------- | ----------- |
+| 3    | bucket   | Your bucket name |
+| 4    | key      | Path to the state file in the bucket |
+| 6    | dynamodb_table | Table to store the terraform Lock |
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Change the projects [variables](terraform/variables.tf)
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+| Line | Variable | Description |
+| ---- | -------- | ----------- |
+| 1    | profile  | AWS profile to execute the terraform |
+| 14   | tags     | Adjust the tags for your needs |
+| 23   | s3_name  | Bucket name |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Manual
 
-### `npm run eject`
+1. Install the node modules.
+```sh
+npm i
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
+**NOTE**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+You can launch the test runner with:
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```sh
+npm test
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Also, you can run the app in the development mode:
 
-## Learn More
+http://localhost:3000
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```sh
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
+
+
+2. Set the API endpoint into .env
+```sh
+echo "REACT_APP_API_URL=$BACKEND_API_ENV" >> .env
+```
+
+3. Build it.
+```sh
+npm run build
+```
+
+4. Enter to the terraform directory and run the following commands:
+
+```sh
+# Initialize terraform
+terraform init
+# Infrastructure checkout
+terraform plan
+# Infrastructure deploy
+terraform apply
+```
+
+5. Upload the builded frontend to the bucket
+```sh
+
+aws s3 sync . s3://<bucket name>
+```
+
+### Pipeline
+

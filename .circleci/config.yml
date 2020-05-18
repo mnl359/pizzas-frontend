@@ -1,9 +1,9 @@
 version: 2.1
 orbs:
   node: circleci/node@2.0.3
+  aws-cli: circleci/aws-cli@1.0.0
 
 terraform: &terraform
-  working_directory: ~/pizza-aplication
   docker:
     - image: mcarras1/terraform_aws-cli:1.2
   environment:
@@ -15,7 +15,6 @@ terraform: &terraform
 jobs:
   build:
     executor: node/default
-    working_directory: ~/pizza-aplication
     environment:
         BACKEND_API_ENV: $BACKEND_API
         CI: true
@@ -27,54 +26,53 @@ jobs:
                 echo "REACT_APP_API_URL=$BACKEND_API_ENV" >> .env
         - run:
             name: Install
-            command: npm install
+            command: npm ci
         - run:
             name: Unit test
-            command: echo Success
+            command: npm test
         - run:
             name: Build
             command: | 
               CI=false npm run build
-              ls -la
         - persist_to_workspace:
-            root: ~/pizza-aplication
+            root: ~/project
             paths: .
   init:
     <<: *terraform
     steps:
       - attach_workspace:
-          at: ~/pizza-aplication
+          at: ~/project
       - run:
           name: init
           command: |
             cd terraform
             terraform init
       - persist_to_workspace:
-          root: ~/pizza-aplication
+          root: ~/project
           paths: . 
 
   plan:
     <<: *terraform
     steps:
       - attach_workspace:
-          at: ~/pizza-aplication
+          at: ~/project
       - run:
           name: plan
           command: |
             cd terraform
             terraform plan
       - store_artifacts:
-          path: ~/pizza-aplication/terraform/tfplan
+          path: ~/project/terraform/tfplan
           destination: tfplan
       - persist_to_workspace:
-          root: ~/pizza-aplication
+          root: ~/project
           paths: .
 
   apply:
     <<: *terraform
     steps:
       - attach_workspace:
-          at: ~/pizza-aplication
+          at: ~/project
       - run:
           name: apply
           command: |
@@ -84,27 +82,20 @@ jobs:
           name: show
           command: terraform show -no-color > tfresult
       - persist_to_workspace:
-          root: ~/pizza-aplication
+          root: ~/project
           paths: .
 
   deploy:
-    <<: *terraform
+    executor: aws-cli/default
     steps:
       - attach_workspace:
-          at: ~/pizza-aplication
-      - run:
-          name: Setup AWS Credentials
-          command: |
-            mkdir -p ~/.aws/
-            echo "[default]" >> ~/.aws/credentials
-            echo "aws_access_key_id=$TF_VAR_AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
-            echo "aws_secret_access_key=$TF_VAR_AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+          at: ~/project
+      - aws-cli/install
+      - aws-cli/setup
       - run:
           name: Deploy to AWS
           command: |
-            cd terraform
-            export BUCKET=$(cat output.txt | grep bucket_name | sed -E 's/bucket_name = //g')
-            cd ~/pizza-aplication/build
+            cd build
             aws s3 sync . s3://rampup2020-pizza-application2
 
   destroy:
@@ -133,9 +124,17 @@ workflows:
       - apply:
           requires:
             - plan
+          filters:
+            branches:
+              only:
+                - master
       - deploy:
           requires:
             - apply
+          filters:
+            branches:
+              only:
+                - master
       - destroy:
           requires:
             - plan
