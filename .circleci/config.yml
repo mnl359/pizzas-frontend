@@ -96,7 +96,7 @@ jobs:
           name: Deploy to AWS
           command: |
             cd build
-            aws s3 sync . s3://rampup2020-pizza-application2
+            aws s3 sync . s3://pizza-application-computacion-nube
 
   destroy:
     <<: *terraform
