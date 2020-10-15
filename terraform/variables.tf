@@ -23,5 +23,5 @@ variable "tags" {
 variable "s3_name" {
   description = "Amazon S3 name for frontend"
   type        = string
-  default     = "rampup2020-pizza-application2"
+  default     = "pizza-application-computacion-nube"
 }
