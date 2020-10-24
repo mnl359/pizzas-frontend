@@ -96,7 +96,7 @@ jobs:
           name: Deploy to AWS
           command: |
             cd build
-            aws s3 sync . s3://pizza-application-computacion-nube
+            aws s3 sync . s3://pizza-application-mcarras1
 
   destroy:
     <<: *terraform
@@ -105,7 +105,7 @@ jobs:
           at: ~/pizza-aplication
       - run:
           name: Empty the bucket
-          command: aws s3 rm s3://pizza-application-computacion-nube --recursive
+          command: aws s3 rm s3://pizza-application-mcarras1 --recursive
       - run:
           name: destroy app
           command: terraform destroy -auto-approve
